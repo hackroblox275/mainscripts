@@ -5,17 +5,23 @@ local RunService = game:GetService("RunService")
 
 -- Detect if device is mobile
 local function IsMobile()
-    return UserInputService.TouchEnabled and not UserInputService.KeyboardEnabled
+    local success, result = pcall(function()
+        return UserInputService.TouchEnabled and not UserInputService.KeyboardEnabled
+    end)
+    return success and result or false
 end
 
 -- Get scale factor based on device
 local function GetScaleFactor()
-    if IsMobile() then
-        local screenSize = workspace.CurrentCamera.ViewportSize
-        local baseSize = 800 -- Base mobile width
-        return math.min(screenSize.X / baseSize, screenSize.Y / 600)
-    end
-    return 1
+    local success, result = pcall(function()
+        if IsMobile() then
+            local screenSize = workspace.CurrentCamera.ViewportSize
+            local baseSize = 800 -- Base mobile width
+            return math.min(screenSize.X / baseSize, screenSize.Y / 600)
+        end
+        return 1
+    end)
+    return success and result or 1
 end
 
 -- Utility Functions
