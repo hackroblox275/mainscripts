@@ -1,21 +1,24 @@
 -- ts file was generated at discord.gg/25ms
-
+-- Modified: Added Undetectable Death Counter & Anti-Tatsumaki Shield (Ignore)
 
 getgenv().Settings = {
     TargetHealth = 100,
     CharacterHeight = 8,
     ResetStreak = false,
-    AntiDC = true
+    AntiDC = true,
+    DeathCount = 0,
+    IgnoreShields = true -- [ADDED] Toggle for Anti-Shield
 }
+
 local vu1 = game:GetService("Players")
 local vu2 = vu1.LocalPlayer
 local vu3 = game:GetService("RunService")
 local vu4 = workspace:WaitForChild("Map"):WaitForChild("Trash")
 local vu5 = vu2.Character or vu2.CharacterAdded:Wait()
 local v6 = vu5
-local vu7 = vu5.WaitForChild(v6, "HumanoidRootPart")
+local vu7 = vu5:WaitForChild("HumanoidRootPart")
 local v8 = vu5
-local vu9 = vu5.WaitForChild(v8, "Communicate")
+local vu9 = vu5:WaitForChild("Communicate")
 local vu10 = nil
 local vu11 = 0
 local vu12 = nil
@@ -24,6 +27,28 @@ local vu14 = "rbxassetid://11343250001"
 local vu15 = Vector3.new(1000, - 499, 1000)
 local vu16 = nil
 local vu17 = nil
+
+-- [ADDED] Logic to Ignore Tatsumaki Shields
+local function handleShield(obj)
+    if not getgenv().Settings.IgnoreShields then return end
+    
+    -- TSB Shield names are usually "Shield" or contain "Barrier" / "Psychic"
+    if obj.Name == "Shield" or obj.Name:find("Barrier") or obj.Name:find("Psychic") then
+        task.wait() -- Small wait to ensure children are loaded
+        for _, part in ipairs(obj:GetDescendants()) do
+            if part:IsA("BasePart") then
+                part.CanCollide = false
+                part.CanTouch = false -- Prevents getting knocked back/hit by the barrier logic
+                part.Transparency = 0.7 -- Visual indicator that it's ignored
+            end
+        end
+    end
+end
+
+-- Listen for new shields in the game world
+workspace.ChildAdded:Connect(handleShield)
+for _, v in ipairs(workspace:GetChildren()) do handleShield(v) end
+
 local function vu21()
     if getgenv().Settings.ResetStreak then
         local v18 = workspace:FindFirstChild("Live")
@@ -47,7 +72,11 @@ local function vu21()
         return
     end
 end
+
 local function vu22()
+    getgenv().Settings.DeathCount = getgenv().Settings.DeathCount + 1
+    warn("AUTO-FARM: Death Detected. Total Deaths: " .. getgenv().Settings.DeathCount)
+    
     if vu17 then
         vu17:Disconnect()
         vu17 = nil
@@ -55,6 +84,7 @@ local function vu22()
     vu16 = nil
     vu13 = false
 end
+
 local function vu27(p23)
     local v24 = p23:FindFirstChild("HumanoidRootPart")
     if v24 then
@@ -63,6 +93,7 @@ local function vu27(p23)
         v24.CFrame = CFrame.new(v25, v25 + v26)
     end
 end
+
 local function vu30()
     if getgenv().Settings.AntiDC then
         local vu28 = vu5:FindFirstChild("HumanoidRootPart")
@@ -97,6 +128,7 @@ local function vu30()
         return
     end
 end
+
 local function vu33()
     local v31 = vu5:FindFirstChildOfClass("Humanoid")
     if v31 then
@@ -107,6 +139,7 @@ local function vu33()
         end)
     end
 end
+
 local v34, v35, v36 = ipairs(vu4:GetChildren())
 local vu37 = vu13
 local vu38 = vu5
@@ -130,6 +163,7 @@ while true do
         end
     end
 end
+
 local function vu47()
     if vu37 then
         return false
@@ -143,6 +177,7 @@ local function vu47()
     end
     return v46
 end
+
 local function vu54()
     if not vu37 then
         local v48 = vu4
@@ -164,6 +199,7 @@ local function vu54()
         end
     end
 end
+
 local function vu58()
     if not vu37 then
         if not (vu10 and vu10.Parent) or (vu10:GetAttribute("Broken") or tick() - vu11 > 3) then
@@ -190,6 +226,7 @@ local function vu58()
         end
     end
 end
+
 local function vu67()
     if vu37 then
         return nil
@@ -214,6 +251,7 @@ local function vu67()
     end
     return v63
 end
+
 local function vu68()
     if not vu37 then
         if vu12 and vu47() then
@@ -232,6 +270,7 @@ local function vu68()
         end
     end
 end
+
 task.spawn(function()
     while true do
         vu21()
@@ -253,6 +292,7 @@ task.spawn(function()
         task.wait()
     end
 end)
+
 vu2.CharacterAdded:Connect(function(p71)
     task.wait(1)
     vu38 = p71
@@ -264,14 +304,17 @@ vu2.CharacterAdded:Connect(function(p71)
         vu33()
     end
 end)
+
 vu3.RenderStepped:Connect(function()
     vu21()
 end)
+
 vu33()
 local v73 = vu38:FindFirstChildOfClass("Humanoid")
 if v73 then
     v73.Died:Connect(vu22)
 end
+
 local v74 = game:GetService("Players")
 local v75 = game:GetService("RunService")
 local vu76 = v74.LocalPlayer
@@ -283,15 +326,18 @@ local vu81 = nil
 local vu82 = nil
 local vu83 = nil
 local vu84 = nil
+
 local function vu85()
     vu81 = vu76.Character or vu76.CharacterAdded:Wait()
     vu82 = vu81:WaitForChild("Humanoid")
     vu83 = vu82:FindFirstChildOfClass("Animator")
 end
 vu85()
+
 vu76.CharacterAdded:Connect(function()
     vu85()
 end)
+
 local function vu87()
     if vu83 then
         if vu84 then
@@ -306,6 +352,7 @@ local function vu87()
         vu84:AdjustSpeed(vu80)
     end
 end
+
 v75.RenderStepped:Connect(function()
     if vu83 then
         local v88 = vu83
@@ -322,9 +369,11 @@ v75.RenderStepped:Connect(function()
         end
     end
 end)
+
 v75.Heartbeat:Connect(function()
     vu87()
 end)
+
 local v93 = game:GetService("Players").LocalPlayer
 local function vu99(p94)
     local v95, v96, v97 = ipairs(p94:GetDescendants())
@@ -342,6 +391,7 @@ local function vu99(p94)
         end
     end
 end
+
 local function vu101(p100)
     task.wait(0.5)
     while p100 and p100.Parent do
@@ -349,9 +399,11 @@ local function vu101(p100)
         task.wait(0.5)
     end
 end
+
 if v93.Character then
     coroutine.wrap(vu101)(v93.Character)
 end
+
 v93.CharacterAdded:Connect(function(p102)
     coroutine.wrap(vu101)(p102)
 end)
