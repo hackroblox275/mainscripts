@@ -98,7 +98,7 @@ function lib:init(titleText)
 
     local list = Instance.new("UIListLayout", content)
     list.Padding = UDim.new(0,10)
-    list.HorizontalAlignment = Center
+    list.HorizontalAlignment = Enum.HorizontalAlignment.Center
 
     local window = {}
 
@@ -110,7 +110,7 @@ function lib:init(titleText)
         d.TextColor3 = Color3.fromRGB(95,95,95)
         d.BackgroundTransparency = 1
         d.Size = UDim2.fromOffset(420,30)
-        d.TextXAlignment = Left
+        d.TextXAlignment = Enum.TextXAlignment.Left
     end
 
     function window:Button(text, cb)
@@ -144,7 +144,7 @@ function lib:init(titleText)
         label.Text = text
         label.Font = Enum.Font.Gotham
         label.TextSize = 20
-        label.TextXAlignment = Left
+        label.TextXAlignment = Enum.TextXAlignment.Left
         label.BackgroundTransparency = 1
         label.Size = UDim2.fromScale(0.7,1)
 
